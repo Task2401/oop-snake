@@ -19,7 +19,7 @@ class Snake {
         const std::list<Position> getSnakeBody() const;
 
         void move();
-        void setDirection(Direction dir);
+        void setDirection(Direction newDir);
 };
 
 #endif
