@@ -19,6 +19,7 @@ class GameObject {
         Position getPos() const;
         Direction getDi() const;
 
+        void move();
         void setDirection(Direction dir);
 };
 
