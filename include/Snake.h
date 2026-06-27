@@ -1,26 +1,24 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
-#include <vector>
 #include <list>
 
 #include "Common.h"
 
 class Snake {
     private:
-        std::vector<Position> body;
+        std::list<Position> body;
         Direction direction;
 
     public:
-        Snake();
+        Snake(Direction dir);
         ~Snake();
 
         Direction getSnakeDiretion() const;
         Position getHeadPos() const;
-        const std::vector<Position> getSnakeBody() const;
+        const std::list<Position> getSnakeBody() const;
 
         void move();
-        void grow();
         void setDirection(Direction dir);
 };
 
