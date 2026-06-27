@@ -34,11 +34,11 @@ void Snake::move() {
 
     switch (dir) {
         case UP:
-            newHead.y += 1;
+            newHead.y -= 1;
             break;
 
         case DOWN:
-            newHead.y -= 1;
+            newHead.y += 1;
             break;
 
         case RIGHT:
