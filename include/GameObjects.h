@@ -16,13 +16,13 @@ class GameObject {
         ~GameObject();
 
         ObjectType getType() const;
-        Position getPos() const;
-        Direction getDi() const;
+        Position getPosition() const;
+        Direction getDirection() const;
 
-        void move();
+       
+        void setPosition(Position newPos);
         void setDirection(Direction dir);
+        void move();
 };
-
-
 
 #endif
