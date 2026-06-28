@@ -32,20 +32,23 @@ class State {
         std::vector<GameObject> objects;
         int score;
         int frameCounter;
+        bool playing;
         bool gameOver;
-        bool isPaused;
+        bool paused;
 
     public:
         State();
         ~State();
 
-        void addObject(const std::vector<GameObject>& obj);
-        void update();
-
         const Snake& getSnake() const;
         const std::vector<GameObject>& getObjects() const;
         int getScore() const;
-        bool isGameOver() const;
 
+        bool isGameOver() const;
+        bool isPlaying() const;
+        bool isPaused() const;
+
+        void addObject(const GameObject& obj);
+        void update();
 };
 #endif
