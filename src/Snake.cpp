@@ -28,6 +28,14 @@ const list<Position> Snake::getSnakeBody() const {
     return body;
 }
 
+void Snake::setSnakeBody(const std::list<Position>& newBody) {
+    body = newBody; 
+}
+
+void Snake::setDirection(Direction newDir) {
+    direction = newDir;
+}
+
 void Snake::move() {
     Position newHead = getHeadPos();
     Direction dir = getSnakeDiretion();
@@ -43,7 +51,4 @@ void Snake::move() {
     body.pop_front();
 }
 
-void Snake::setDirection(Direction newDir) {
-    direction = newDir;
-}
 
