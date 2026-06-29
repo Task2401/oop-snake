@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
-#include <vector>
 
 #include "../include/State.h"
 
