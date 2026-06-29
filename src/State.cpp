@@ -64,6 +64,7 @@ void State::addObject(const GameObject& obj) {
 void State::update() {
     Position headPos = snake.getHeadPos();
     Direction headDir = snake.getSnakeDiretion();
+    list<Position> body = snake.getSnakeBody();
     frameCounter++;
 
     if (playing == false) {
