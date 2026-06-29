@@ -14,8 +14,8 @@ static float randf() {
     return (float)rand() / (float)RAND_MAX;
 }
 
-static Position getRandomPosition() {
-    return Position{ randi(0, 29), randi(0,29) };
+static Position getRandomPosition(Position center) {
+    return Position{ center.x + randi(-40, 40), center.y + randi(-40, 40) };
 }
 
 static int  calculateDistance(Position p1, Position p2) {
@@ -55,6 +55,11 @@ bool State::isPlaying() const {
 bool State::isPaused() const {
     return paused;
 }
+
+void State::setKeys(Keystates currentKeys) {
+    keys = currentKeys;
+}
+
 
 void State::addObject(const GameObject& obj) {
     objects.push_back(obj);
@@ -124,14 +129,14 @@ void State::update() {
         }
 
         while (eagleCount < MAX_EAGLE_COUNT) {
-            Position randomPos = getRandomPosition();
+            Position randomPos = getRandomPosition(headPos);
             GameObject eagle = GameObject(EAGLE, randomPos, (Direction)randi(0, 3));
             addObject(eagle);
             eagleCount++;
         }
 
         while (appleCount < MAX_APPLE_COUNT) {
-            Position randomPos = getRandomPosition();
+            Position randomPos = getRandomPosition(headPos);
             GameObject apple = GameObject(APPLE, randomPos, UP);
             addObject(apple);
             appleCount++;

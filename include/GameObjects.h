@@ -1,5 +1,5 @@
 #ifndef GAMEOBJECTS_H
-#define GAMEOBJECT_H
+#define GAMEOBJECTS_H
 
 #include "Common.h"
 

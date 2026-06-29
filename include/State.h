@@ -48,6 +48,8 @@ class State {
         bool isPlaying() const;
         bool isPaused() const;
 
+        void setKeys(Keystates currentKeys);
+
         void addObject(const GameObject& obj);
         void update();
 };
