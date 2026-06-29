@@ -63,8 +63,7 @@ void State::addObject(const GameObject& obj) {
 void State::update() {
     Position headPos = snake.getHeadPos();
     Direction headDir = snake.getSnakeDiretion();
-    list<Position> body = snake.getSnakeBody();
-    frameCounter++;
+    list<Position> snakeBody = snake.getSnakeBody();
 
     if (playing == false) {
         if (keys.start == true) {
@@ -95,6 +94,7 @@ void State::update() {
 
     if (paused) return;
 
+    frameCounter++;
 
     if (frameCounter % FRAMES_PER_STATE == 0) {
         
@@ -112,6 +112,9 @@ void State::update() {
 
         snake.move();
 
+        headPos = snake.getHeadPos();
+        snakeBody = snake.getSnakeBody();
+
         int appleCount = 0;
         int eagleCount = 0;
 
@@ -124,12 +127,14 @@ void State::update() {
             Position randomPos = getRandomPosition();
             GameObject eagle = GameObject(EAGLE, randomPos, (Direction)randi(0, 3));
             addObject(eagle);
+            eagleCount++;
         }
 
         while (appleCount < MAX_APPLE_COUNT) {
             Position randomPos = getRandomPosition();
             GameObject apple = GameObject(APPLE, randomPos, UP);
             addObject(apple);
+            appleCount++;
         }
 
         for (size_t i = 0; i < objects.size(); i++) {
@@ -138,6 +143,38 @@ void State::update() {
                     objects[i].setDirection((Direction)randi(0, 3));
                 objects[i].move();
             }
+        }
+
+        bool appleEaten = false;
+        int appleIndex = -1;
+
+        for (size_t i = 0; i < objects.size(); i++) {
+            if (objects[i].getType() == EAGLE && calculateDistance(headPos, objects[i].getPosition()) == 0)
+                gameOver = true;
+            else if (objects[i].getType() == APPLE && calculateDistance(headPos, objects[i].getPosition()) == 0) {
+                appleEaten = true;
+                appleIndex = i;
+                score++;
+            }
+            for (const Position& snakeNode : snakeBody) {
+                if (objects[i].getType() == EAGLE && calculateDistance(snakeNode, objects[i].getPosition()) == 0) 
+                    gameOver = true;
+            }        
+        }
+
+        size_t nodeCounter = 0;
+
+        for (const Position& snakeNode : snakeBody) {
+            nodeCounter++;
+            if (nodeCounter == snakeBody.size()) break;
+            if (calculateDistance(snakeNode, headPos) == 0) gameOver = true;
+        }
+        
+        if (appleEaten == true) {
+            objects.erase(objects.begin() + appleIndex);
+            Position newSnakeNode = snakeBody.front();
+            snakeBody.push_front(newSnakeNode);
+            snake.setSnakeBody(snakeBody);
         }
     }
 }
