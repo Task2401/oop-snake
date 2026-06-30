@@ -120,8 +120,8 @@ void State::update() {
         headPos = snake.getHeadPos();
         snakeBody = snake.getSnakeBody();
 
-        int appleCount = 0;
-        int eagleCount = 0;
+        size_t appleCount = 0;
+        size_t eagleCount = 0;
 
         for (size_t i = 0; i < objects.size(); i++) {
             if (objects[i].getType() == APPLE) appleCount++;
@@ -154,32 +154,44 @@ void State::update() {
         int appleIndex = -1;
 
         for (size_t i = 0; i < objects.size(); i++) {
-            if (objects[i].getType() == EAGLE && calculateDistance(headPos, objects[i].getPosition()) == 0)
-                gameOver = true;
-            else if (objects[i].getType() == APPLE && calculateDistance(headPos, objects[i].getPosition()) == 0) {
-                appleEaten = true;
-                appleIndex = i;
-                score++;
+            if (objects[i].getType() == EAGLE) {
+                if ( calculateDistance(objects[i].getPosition(), headPos) == 0) gameOver = true;
+
+                for (const Position& snakeNode : snakeBody) {
+                    if (calculateDistance(objects[i].getPosition(), snakeNode) == 0) {
+                        gameOver = true;
+                        break;
+                    }
+                }
             }
-            for (const Position& snakeNode : snakeBody) {
-                if (objects[i].getType() == EAGLE && calculateDistance(snakeNode, objects[i].getPosition()) == 0) 
-                    gameOver = true;
-            }        
+
+            else if (objects[i].getType() == APPLE) {
+                if (calculateDistance(objects[i].getPosition(), headPos) == 0) {
+                    score++;
+                    appleIndex = i;
+                    appleEaten = true;
+                    break;
+                }
+            }
         }
 
-        size_t nodeCounter = 0;
-
+        size_t snakeNodeCounter = 0;
+        
         for (const Position& snakeNode : snakeBody) {
-            nodeCounter++;
-            if (nodeCounter == snakeBody.size()) break;
+            snakeNodeCounter++;
+            if (snakeNodeCounter == snakeBody.size()) break;
             if (calculateDistance(snakeNode, headPos) == 0) gameOver = true;
         }
-        
+
         if (appleEaten == true) {
             objects.erase(objects.begin() + appleIndex);
             Position newSnakeNode = snakeBody.front();
             snakeBody.push_front(newSnakeNode);
             snake.setSnakeBody(snakeBody);
         }
+
+        for (int i = (int)objects.size() - 1; i >= 0; i--)
+            if (calculateDistance(objects[i].getPosition(), headPos) > 120)
+                objects.erase(objects.begin() + i);
     }
 }
