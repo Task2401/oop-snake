@@ -7,22 +7,28 @@ enum ObjectType {APPLE, EAGLE};
 
 class GameObject {
     private:
-        ObjectType type;
-        Position position;
-        Direction direction;
+        ObjectType type;            // Object type identifier (Apple or Eagle)
+        Position position;          // Current map coordinates
+        Direction direction;        // Movement direction vector
 
     public:
         GameObject(ObjectType type, Position pos, Direction dir);
         ~GameObject();
 
+        // Getters
+
         ObjectType getType() const;
         Position getPosition() const;
         Direction getDirection() const;
 
-       
+        // Setters
+
         void setPosition(Position newPos);
         void setDirection(Direction dir);
-        void move();
+        
+        // Object movement function
+
+        void move();    // Updates position for moving objects
 };
 
 #endif

@@ -9,13 +9,19 @@ using namespace std;
 #include "../include/State.h"
 #include "../include/Interface.h"
 
+// Constructor
+
 Interface::Interface() {
     cout << "Interface created successfully!" << endl;
 }
 
+// Destructor
+
 Interface::~Interface() {
     cout << "Interface destroyed successfully!" << endl;
 }
+
+// Opens and configures the Raylib window setup
 
 void Interface::init() {
     int screenWidth = 800;
@@ -24,6 +30,8 @@ void Interface::init() {
     
     InitWindow(screenWidth, screenHight, "Snake Game by Task2401");
     SetTargetFPS(gameFps);
+
+    // Load and apply window taskbar icon
 
     Image gameIcon = LoadImage("assets/game_icon.png");
     
@@ -34,10 +42,14 @@ void Interface::init() {
     cout << "Window opened and configured successfully via init()!" << endl;
 }
 
+// Terminates window and context resources
+
 void Interface::close() {
     CloseWindow();
     cout << "Window closed successfully via close()!" << endl;
 }
+
+// Core rendering system function
 
 void Interface::draw_frame(const State& state) {
     ClearBackground(LIGHTGRAY);
@@ -50,14 +62,18 @@ void Interface::draw_frame(const State& state) {
     const auto& snake = state.getSnake();
     const auto& snakeBody = snake.getSnakeBody();
     Position snakeHeadPos = snake.getHeadPos();
-    Camera2D camera = { 0 };
+   
+    // Camera Viewport Lock (Tracks snake head position)
 
+    Camera2D camera = { 0 };
     camera.target = Vector2{ (float)snakeHeadPos.x, (float)snakeHeadPos.y };
     camera.offset = Vector2 { 800.0f / 2.0f, 600.0f / 2.0f };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
     BeginMode2D(camera);
+
+        // Render external game objects (Apples & Eagles)
 
         for (size_t i = 0; i < objects.size(); i++) {
             int x = objects[i].getPosition().x;
@@ -66,24 +82,31 @@ void Interface::draw_frame(const State& state) {
             if (objects[i].getType() == APPLE) DrawCircle(x, y, appleRadius, RED);
             else if (objects[i].getType() == EAGLE) {
                 Vector2 v1 = { (float)x, (float)y - eagleRadius };
-                Vector2 v2 = { (float)x - eagleRadius, (float)y + eagleRadius };
+                Vector2 v2 = { (float)x - eagleRadius, (float)y + eagleRadius }; 
                 Vector2 v3 = { (float)x + eagleRadius, (float)y + eagleRadius };
                 DrawTriangle(v1, v2, v3, BLACK);
             }
         }
+
+        // Render full snake body nodes (Lime segments, Dark Green head)
 
         for (const Position& snakeBodyNode : snakeBody) {
             if (snakeBodyNode.x == snakeHeadPos.x && snakeBodyNode.y == snakeHeadPos.y) continue;
             DrawCircle(snakeBodyNode.x, snakeBodyNode.y, snakeRadius, LIME);
         }
         DrawCircle(snakeHeadPos.x, snakeHeadPos.y, snakeRadius, DARKGREEN);
+    
     EndMode2D();
+
+    // HUD Rendering (Score overlay display)
 
     DrawText(TextFormat("SCORE: %d", state.getScore()), 20, 20, 20, DARKGRAY);
     DrawFPS(700, 20);
 
     int screenWidth = 800;
     int screenHeight = 600;
+
+    // UI Layer: Main Menu Overlay
 
     if (!state.isPlaying() && !state.isGameOver()){
         DrawRectangle(0, 0, screenWidth, screenHeight, Fade(BLACK, 0.75f));
@@ -98,6 +121,8 @@ void Interface::draw_frame(const State& state) {
         DrawText(subTitle.c_str(), subTitleX, 320, 24, ORANGE);
     }
 
+    // UI Layer: Active Gameplay Pause Overlay
+
     if (state.isPaused() == true && state.isGameOver() == false) {
         DrawRectangle(0, 0, screenWidth, screenHeight, Fade(BLACK, 0.75f));
         
@@ -110,6 +135,8 @@ void Interface::draw_frame(const State& state) {
         DrawText(pauseTitle.c_str(), pauseTitleX, 220, 45, SKYBLUE);
         DrawText(pauseSub.c_str(), pauseSubX, 320, 24, WHITE);
     }
+
+    // UI Layer: Game Over Window Reset Screen
 
     if (state.isGameOver()) {
         DrawRectangle(0, 0, screenWidth, screenHeight, Fade(BLACK, 0.85f));

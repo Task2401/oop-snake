@@ -6,13 +6,19 @@
 
 using namespace std;
 
+// Generates a random integer between min and max
+
 static int randi(int min, int max) {
     return  min + rand() % (max - min + 1);
 }
 
+// Generates a random float between 0.0 and 1.0
+
 static float randf() {
     return (float)rand() / (float)RAND_MAX;
 }
+
+// Spawns a random position in a 100-400 pixel radius around a center point
 
 static Position getRandomPosition(Position center) {
     int signX = (rand() % 2 == 0) ? 1 : -1;
@@ -24,11 +30,15 @@ static Position getRandomPosition(Position center) {
     };
 }
 
+// Calculates Manhattan distance between two points
+
 static int  calculateDistance(Position p1, Position p2) {
     int dx = abs(p1.x - p2.x);
     int dy = abs(p1.y - p2.y);
     return dx + dy;
 }
+
+// Constructor -> Initializes game flags and registers
 
 State::State() : 
     snake(RIGHT), 
@@ -42,9 +52,13 @@ State::State() :
     cout << "State created succesfully!" << endl;
 }
 
+// Destructor
+
 State::~State() {
     cout << "State destroyed succesfully!" << endl;
 }
+
+// Getters & Setters
 
 const Snake& State::getSnake() const {
     return snake;
@@ -79,10 +93,15 @@ void State::addObject(const GameObject& obj) {
     objects.push_back(obj);
 }
 
+// This update function is the core of the snake game logic
+// because is running in every frame of the game;
+
 void State::update() {
     Position headPos = snake.getHeadPos();
     Direction headDir = snake.getSnakeDiretion();
     list<Position> snakeBody = snake.getSnakeBody();
+
+    // Start screen menu handler
 
     if (playing == false) {
         if (keys.start == true) {
@@ -91,6 +110,8 @@ void State::update() {
         }
         return;
     }
+
+    // Game over reset handler
 
     if (gameOver) {
         if (keys.start) {
@@ -106,6 +127,8 @@ void State::update() {
         return;
     }
 
+    // Pause input handler
+
     if (keys.pause) {
         paused = !paused;
         keys.pause = false;
@@ -115,8 +138,12 @@ void State::update() {
 
     frameCounter++;
 
+    // Fixed logic tick
+
     if (frameCounter % FRAMES_PER_STATE == 0) {
         
+        // / Process snake direction inputs (preventing 180-degree self-turns)
+
         if (keys.up && headDir != DOWN)
             snake.setDirection(UP);
 
@@ -129,10 +156,16 @@ void State::update() {
         else if (keys.right && headDir != LEFT)
             snake.setDirection(RIGHT);
 
+        // Advance snake positioning
+        
         snake.move();
+
+        // Refresh dynamic positions
 
         headPos = snake.getHeadPos();
         snakeBody = snake.getSnakeBody();
+
+        // Count existing objects currently on the map
 
         size_t appleCount = 0;
         size_t eagleCount = 0;
@@ -142,6 +175,8 @@ void State::update() {
             else if (objects[i].getType() == EAGLE) eagleCount++;
         }
 
+         // Procedural generation: Replenish missing eagles
+
         while (eagleCount < MAX_EAGLE_COUNT) {
             Position randomPos = getRandomPosition(headPos);
             GameObject eagle = GameObject(EAGLE, randomPos, (Direction)randi(0, 3));
@@ -149,12 +184,16 @@ void State::update() {
             eagleCount++;
         }
 
+        // Procedural generation: Replenish missing apples
+
         while (appleCount < MAX_APPLE_COUNT) {
             Position randomPos = getRandomPosition(headPos);
             GameObject apple = GameObject(APPLE, randomPos, UP);
             addObject(apple);
             appleCount++;
         }
+
+        // Run Eagle's self pathfinding updates and movement
 
         for (size_t i = 0; i < objects.size(); i++) {
             if (objects[i].getType() == EAGLE) {
@@ -167,11 +206,21 @@ void State::update() {
         bool appleEaten = false;
         int appleIndex = -1;
 
+        //  Global Collision Checking
+
         for (size_t i = 0; i < objects.size(); i++) {
             if (objects[i].getType() == EAGLE) {
-                if ( calculateDistance(objects[i].getPosition(), headPos) < EAGLE_SIZE) gameOver = true;
 
+                // Eagle vs Snake Head collision
+
+                if ( calculateDistance(objects[i].getPosition(), headPos) < EAGLE_SIZE) gameOver = true;
+                
+                // Eagle vs Snake Body collision
+                
                 for (const Position& snakeNode : snakeBody) {
+                    
+                    // Snake Head vs Apple collision
+                    
                     if (calculateDistance(objects[i].getPosition(), snakeNode) < EAGLE_SIZE) {
                         gameOver = true;
                         break;
@@ -179,7 +228,12 @@ void State::update() {
                 }
             }
 
+
+
             else if (objects[i].getType() == APPLE) {
+                
+                // Snake Head vs Apple collision
+
                 if (calculateDistance(objects[i].getPosition(), headPos) < APPLE_SIZE) {
                     score++;
                     appleIndex = i;
@@ -189,6 +243,8 @@ void State::update() {
             }
         }
 
+        // Snake Self-Collision check (Head vs Body segments)
+
         size_t snakeNodeCounter = 0;
         
         for (const Position& snakeNode : snakeBody) {
@@ -197,6 +253,8 @@ void State::update() {
             if (calculateDistance(snakeNode, headPos) < 1) gameOver = true;
         }
 
+        //  Handle apple consumption: delete the apple and grow the snake body
+
         if (appleEaten == true) {
             objects.erase(objects.begin() + appleIndex);
             Position newSnakeNode = snakeBody.front();
@@ -204,8 +262,10 @@ void State::update() {
             snake.setSnakeBody(snakeBody);
         }
 
+        // Memory Management: Despawn far away out-of-bounds objects
+
         for (int i = (int)objects.size() - 1; i >= 0; i--)
-            if (calculateDistance(objects[i].getPosition(), headPos) > 600) // Από 120 το κάνουμε 600
+            if (calculateDistance(objects[i].getPosition(), headPos) > 600)
                 objects.erase(objects.begin() + i);
     }
 }
