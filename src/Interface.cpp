@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include <string>
 
 using namespace std;
 
@@ -24,8 +25,9 @@ void Interface::init() {
     InitWindow(screenWidth, screenHight, "Snake Game by Task2401");
     SetTargetFPS(gameFps);
 
-    Image gameIcon = LoadImage("../asset/game_icon.svg");
+    Image gameIcon = LoadImage("assets/game_icon.png");
     
+    ImageResize(&gameIcon, 32, 32);
     SetWindowIcon(gameIcon);
     UnloadImage(gameIcon);
 
@@ -39,6 +41,10 @@ void Interface::close() {
 
 void Interface::draw_frame(const State& state) {
     ClearBackground(LIGHTGRAY);
+
+    float snakeRadius = SNAKE_SIZE / 2;
+    float appleRadius = APPLE_SIZE / 2;
+    float eagleRadius = EAGLE_SIZE / 2;
 
     const auto& objects = state.getObjects();
     const auto& snake = state.getSnake();
@@ -57,42 +63,67 @@ void Interface::draw_frame(const State& state) {
             int x = objects[i].getPosition().x;
             int y = objects[i].getPosition().y;
 
-            if (objects[i].getType() == APPLE) DrawCircle(x, y, APPLE_SIZE / 2, RED);
+            if (objects[i].getType() == APPLE) DrawCircle(x, y, appleRadius, RED);
             else if (objects[i].getType() == EAGLE) {
-                Vector2 v1 = { (float)x, (float)y - (EAGLE_SIZE / 2) };
-                Vector2 v2 = { (float)x - (EAGLE_SIZE / 2), (float)y + (EAGLE_SIZE / 2) };
-                Vector2 v3 = { (float)x + (EAGLE_SIZE / 2), (float)y + (EAGLE_SIZE / 2) };
+                Vector2 v1 = { (float)x, (float)y - eagleRadius };
+                Vector2 v2 = { (float)x - eagleRadius, (float)y + eagleRadius };
+                Vector2 v3 = { (float)x + eagleRadius, (float)y + eagleRadius };
                 DrawTriangle(v1, v2, v3, BLACK);
             }
         }
 
         for (const Position& snakeBodyNode : snakeBody) {
             if (snakeBodyNode.x == snakeHeadPos.x && snakeBodyNode.y == snakeHeadPos.y) continue;
-            DrawCircle(snakeBodyNode.x, snakeBodyNode.y, SNAKE_SIZE / 2, LIME);
+            DrawCircle(snakeBodyNode.x, snakeBodyNode.y, snakeRadius, LIME);
         }
-        DrawCircle(snakeHeadPos.x, snakeHeadPos.y, SNAKE_SIZE / 2, DARKGREEN);
+        DrawCircle(snakeHeadPos.x, snakeHeadPos.y, snakeRadius, DARKGREEN);
     EndMode2D();
 
     DrawText(TextFormat("SCORE: %d", state.getScore()), 20, 20, 20, DARKGRAY);
     DrawFPS(700, 20);
 
+    int screenWidth = 800;
+    int screenHeight = 600;
+
     if (!state.isPlaying() && !state.isGameOver()){
-        DrawRectangle(0, 0, 800, 600, Fade(BLACK, 0.4f));
-        DrawText("[SNAKE GAME]", 280, 220, 40, LIME);
-        DrawText("PRESS ENTER TO PLAY", 240, 320, 22, WHITE);
+        DrawRectangle(0, 0, screenWidth, screenHeight, Fade(BLACK, 0.75f));
+        
+        string title = "[SNAKE GAME]";
+        string subTitle = "PRESS ENTER TO PLAY";
+        
+        int titleX = (screenWidth / 2) - (MeasureText(title.c_str(), 45) / 2);
+        int subTitleX = (screenWidth / 2) - (MeasureText(subTitle.c_str(), 24) / 2);
+
+        DrawText(title.c_str(), titleX, 220, 45, GOLD);
+        DrawText(subTitle.c_str(), subTitleX, 320, 24, ORANGE);
     }
 
     if (state.isPaused() == true && state.isGameOver() == false) {
-        DrawRectangle(0, 0, 800, 600, Fade(BLACK, 0.4f));
-        DrawText("[PAUSED]", 280, 220, 40, LIME);
-        DrawText("PRESS P TO RESUME", 240, 320, 22, WHITE);
+        DrawRectangle(0, 0, screenWidth, screenHeight, Fade(BLACK, 0.75f));
+        
+        string pauseTitle = "[PAUSED]";
+        string pauseSub = "PRESS P TO RESUME";
+
+        int pauseTitleX = (screenWidth / 2) - (MeasureText(pauseTitle.c_str(), 45) / 2);
+        int pauseSubX = (screenWidth / 2) - (MeasureText(pauseSub.c_str(), 24) / 2);
+
+        DrawText(pauseTitle.c_str(), pauseTitleX, 220, 45, SKYBLUE);
+        DrawText(pauseSub.c_str(), pauseSubX, 320, 24, WHITE);
     }
 
     if (state.isGameOver()) {
-        DrawRectangle(0, 0, 800, 600, Fade(BLACK, 0.6f));
-        DrawText("[GAME OVER]", 280, 220, 45, RED);
-        DrawText(TextFormat("[FINAL SCORE] -> %d", state.getScore()), 320, 300, 24, WHITE);
-        DrawText("[PRESS ENTER TO RESTART]", 240, 370, 22, GOLD);
-    }
+        DrawRectangle(0, 0, screenWidth, screenHeight, Fade(BLACK, 0.85f));
+        
+        string gameOverTitle = "[GAME OVER]";
+        string finalScoreText = "FINAL SCORE -> " + to_string(state.getScore());
+        string restartText = "PRESS ENTER TO RESTART";
 
-} 
+        int goX = (screenWidth / 2) - (MeasureText(gameOverTitle.c_str(), 50) / 2);
+        int fsX = (screenWidth / 2) - (MeasureText(finalScoreText.c_str(), 26) / 2);
+        int rtX = (screenWidth / 2) - (MeasureText(restartText.c_str(), 24) / 2);
+
+        DrawText(gameOverTitle.c_str(), goX, 220, 50, RED);
+        DrawText(finalScoreText.c_str(), fsX, 300, 26, WHITE);
+        DrawText(restartText.c_str(), rtX, 370, 24, GOLD);
+    }
+}

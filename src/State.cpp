@@ -15,7 +15,13 @@ static float randf() {
 }
 
 static Position getRandomPosition(Position center) {
-    return Position{ center.x + randi(-40, 40), center.y + randi(-40, 40) };
+    int signX = (rand() % 2 == 0) ? 1 : -1;
+    int signY = (rand() % 2 == 0) ? 1 : -1;
+    
+    return Position{ 
+        center.x + (signX * randi(100, 400)), 
+        center.y + (signY * randi(100, 400)) 
+    };
 }
 
 static int  calculateDistance(Position p1, Position p2) {
@@ -24,7 +30,15 @@ static int  calculateDistance(Position p1, Position p2) {
     return dx + dy;
 }
 
-State::State() : snake(RIGHT), score(0), frameCounter(0), gameOver(false), playing(false), paused(false), keys{false, false, false, false, false, false} {
+State::State() : 
+    snake(RIGHT), 
+    keys{false, false, false, false, false, false}, 
+    score(0), 
+    frameCounter(0), 
+    playing(false), 
+    gameOver(false), 
+    paused(false) 
+{
     cout << "State created succesfully!" << endl;
 }
 
@@ -155,10 +169,10 @@ void State::update() {
 
         for (size_t i = 0; i < objects.size(); i++) {
             if (objects[i].getType() == EAGLE) {
-                if ( calculateDistance(objects[i].getPosition(), headPos) == 0) gameOver = true;
+                if ( calculateDistance(objects[i].getPosition(), headPos) < EAGLE_SIZE) gameOver = true;
 
                 for (const Position& snakeNode : snakeBody) {
-                    if (calculateDistance(objects[i].getPosition(), snakeNode) == 0) {
+                    if (calculateDistance(objects[i].getPosition(), snakeNode) < EAGLE_SIZE) {
                         gameOver = true;
                         break;
                     }
@@ -166,7 +180,7 @@ void State::update() {
             }
 
             else if (objects[i].getType() == APPLE) {
-                if (calculateDistance(objects[i].getPosition(), headPos) == 0) {
+                if (calculateDistance(objects[i].getPosition(), headPos) < APPLE_SIZE) {
                     score++;
                     appleIndex = i;
                     appleEaten = true;
@@ -180,7 +194,7 @@ void State::update() {
         for (const Position& snakeNode : snakeBody) {
             snakeNodeCounter++;
             if (snakeNodeCounter == snakeBody.size()) break;
-            if (calculateDistance(snakeNode, headPos) == 0) gameOver = true;
+            if (calculateDistance(snakeNode, headPos) < 1) gameOver = true;
         }
 
         if (appleEaten == true) {
@@ -191,7 +205,7 @@ void State::update() {
         }
 
         for (int i = (int)objects.size() - 1; i >= 0; i--)
-            if (calculateDistance(objects[i].getPosition(), headPos) > 120)
+            if (calculateDistance(objects[i].getPosition(), headPos) > 600) // Από 120 το κάνουμε 600
                 objects.erase(objects.begin() + i);
     }
 }

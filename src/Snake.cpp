@@ -41,10 +41,10 @@ void Snake::move() {
     Direction dir = getSnakeDiretion();
 
     switch (dir) {
-        case UP: newHead.y -= 1; break;
-        case DOWN: newHead.y += 1; break;
-        case RIGHT: newHead.x += 1; break;
-        case LEFT: newHead.x -= 1; break;
+        case UP: newHead.y -= 8; break;
+        case DOWN: newHead.y += 8; break;
+        case RIGHT: newHead.x += 8; break;
+        case LEFT: newHead.x -= 8; break;
     }
 
     body.push_back(newHead);

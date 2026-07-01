@@ -42,10 +42,10 @@ void GameObject::move() {
     Direction objDir = getDirection();
 
     switch (objDir) {
-        case UP: objPos.y -= 1; break;
-        case DOWN: objPos.y += 1; break;
-        case RIGHT: objPos.x += 1; break;
-        case LEFT: objPos.x -= 1; break;
+        case UP: objPos.y -= 4; break;
+        case DOWN: objPos.y += 4; break;
+        case RIGHT: objPos.x += 4; break;
+        case LEFT: objPos.x -= 4; break;
     }
 
     position = objPos;
