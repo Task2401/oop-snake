@@ -12,8 +12,8 @@
 #define EAGLE_SIZE 30
 #define APPLE_SIZE 30
 #define FRAMES_PER_STATE 4
-#define MAX_EAGLE_COUNT 5
-#define MAX_APPLE_COUNT 5
+#define MAX_EAGLE_COUNT 8
+#define MAX_APPLE_COUNT 7
 #define EAGLE_NEXT_DIRECTION_PROBABILITY 0.25
 
 struct Keystates {
