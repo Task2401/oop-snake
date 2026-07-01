@@ -6,8 +6,6 @@
 
 A modular, clean object-oriented implementation of the classic Snake game featuring an arcade-style camera system, dynamic eagle predators, and smooth grid-aligned state synchronization.
 
----
-
 ## Overview
 The project features a fully controllable Snake (@, o) navigating an infinite procedural grid populated with static score-increasing apples and dynamic hunting eagles (▲) that actively change directions. The codebase strictly decouples game loop calculations, state tracking, and graphical rendering to ensure optimal modularity and zero logical race conditions.
 
