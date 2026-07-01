@@ -1,5 +1,5 @@
 # Retro Snake Game (C++ / OOP / Raylib)
----
+
 
 ![Language](https://img.shields.io/badge/language-C%2B%2B11-blue.svg)
 ![Build](https://img.shields.io/badge/build-MinGW%20/%20Make-green.svg)
