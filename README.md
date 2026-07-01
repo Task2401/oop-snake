@@ -1,6 +1,5 @@
 # Retro Snake Game (C++ / OOP / Raylib)
 
-
 ![Language](https://img.shields.io/badge/language-C%2B%2B11-blue.svg)
 ![Build](https://img.shields.io/badge/build-MinGW%20/%20Make-green.svg)
 ![Framework](https://img.shields.io/badge/framework-Raylib-red.svg)
@@ -11,8 +10,6 @@ A modular, clean object-oriented implementation of the classic Snake game featur
 
 ## Overview
 The project features a fully controllable Snake (@, o) navigating an infinite procedural grid populated with static score-increasing apples and dynamic hunting eagles (▲) that actively change directions. The codebase strictly decouples game loop calculations, state tracking, and graphical rendering to ensure optimal modularity and zero logical race conditions.
-
----
 
 ## Key Technical Features
 
@@ -32,10 +29,7 @@ The game utilizes a strict state-decoupling architecture to isolate calculations
 * **Encapsulation & Data Hiding:** Strict usage of getter and constant safety functions (`const std::vector<GameObject>&`) protecting entity lists from unintended mutations.
 * **Data Structures:** Custom standard library lists (`std::list<Position>`) utilizing highly efficient `push_back` and `pop_front` mutations for linear time complexity queue handling during snake locomotion.
 
----
-
 ## Installation & Usage
-
 
 ### 1. Prerequisites
 * **C++ Compiler:** G++ (MinGW-w64 for Windows / GCC for Linux).
@@ -81,8 +75,6 @@ mingw32-make clean
 make clean
 ```
 
----
-
 ### Game Visuals & Interface Description
 
 The graphical **interface** focuses on rendering a smooth, high-contrast gameplay environment that decouples internal physics grid positioning from presentation layers.
@@ -97,8 +89,6 @@ The graphical **interface** focuses on rendering a smooth, high-contrast gamepla
 
 - **Interface Overlays & Contrast:** Standard game viewports render over a consistent light gray background matrix. Menu structures (Start Screen, Pause Screen, and Game Over Screen) utilize semi-transparent alpha-blended black background overlays with precisely calculated text alignments to prevent visual clipping.
 
----
-
 ### Directory Structure
 ```plaintext
 oop-snake/
@@ -107,7 +97,7 @@ oop-snake/
 ├── src/                # C++ Source files (.cpp system implementations)
 └── Makefile            # Native cross-platform automated compilation script
 ```
----
+
 
 ### Author
 
